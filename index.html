@@ -19,8 +19,7 @@
 
   .person {
     position: absolute;
-    background-position: center;
-    background-size: contain;
+    background-size: 200%; /* Adjust the background size to show a random section */
     background-repeat: no-repeat;
   }
 
@@ -50,23 +49,24 @@
   });
 
   let spawnMode = 'person';
-  let backgrounds = ['Art1.jpg', 'Art2.jpg', 'Art3.jpg'];
 
   document.getElementById('gameContainer').addEventListener('click', (event) => {
     if (spawnMode) {
       const element = document.createElement('div');
       element.className = spawnMode;
 
-      // Randomly select a background image from the array
-      const randomBackground = backgrounds[Math.floor(Math.random() * backgrounds.length)];
-      element.style.backgroundImage = `url('${randomBackground}')`;
+      const gameContainer = document.getElementById('gameContainer');
+      const currentBackgroundImage = getComputedStyle(gameContainer).backgroundImage;
+      element.style.backgroundImage = currentBackgroundImage;
 
-      element.style.left = `${event.clientX - 25}px`; // Adjusted to center the images
-      element.style.top = `${event.clientY - 100}px`; // Adjusted to center the images
+      element.style.backgroundPosition = `${Math.random() * 100}% ${Math.random() * 100}%`;
+      
+      element.style.left = `${event.clientX - 25}px`;
+      element.style.top = `${event.clientY - 100}px`;
 
       // Set random width and height
-      element.style.width = `${Math.random() * 30 + 50}px`; // Random width between 50px and 80px
-      element.style.height = `${Math.random() * 60 + 140}px`; // Random height between 140px and 200px
+      element.style.width = `${Math.random() * 30 + 50}px`;
+      element.style.height = `${Math.random() * 60 + 140}px`;
 
       document.getElementById('gameContainer').appendChild(element);
       movePerson(element);
