@@ -13,6 +13,12 @@
     height: 100vh;
     overflow: hidden;
   }
+  .imagePart {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+  }
 </style>
 </head>
 <body>
@@ -24,8 +30,16 @@
 <script>
   const gameContainer = document.getElementById('gameContainer');
   const backgroundInput = document.getElementById('backgroundInput');
-  const gridSize = 20;
+  const gridSize = 10;
   let currentImageParts = [];
+
+  function initializeBackground() {
+    const initialBackgroundImage = document.createElement('div');
+    initialBackgroundImage.className = 'imagePart';
+    initialBackgroundImage.style.backgroundImage = `url('back.jpg')`;
+    gameContainer.appendChild(initialBackgroundImage);
+    currentImageParts.push(initialBackgroundImage);
+  }
 
   backgroundInput.addEventListener('change', (event) => {
     const file = event.target.files[0];
@@ -45,12 +59,14 @@
     for (let i = 0; i < gridSize; i++) {
       for (let j = 0; j < gridSize; j++) {
         const part = document.createElement('div');
+        part.className = 'imagePart';
         part.style.width = `${100 / gridSize}%`;
         part.style.height = `${100 / gridSize}%`;
         part.style.backgroundImage = `url(${imageSrc})`;
         part.style.backgroundSize = `${gridSize * 100}%`;
-        part.style.backgroundPosition = `${-i * 100}% ${-j * 100}%`;
-        part.style.float = 'left';
+        part.style.backgroundPosition = `${-i * (100 / gridSize)}% ${-j * (100 / gridSize)}%`;
+        part.style.top = `${(100 / gridSize) * i}%`;
+        part.style.left = `${(100 / gridSize) * j}%`;
         parts.push(part);
       }
     }
@@ -73,6 +89,8 @@
     gameContainer.innerHTML = '';
     parts.forEach(part => gameContainer.appendChild(part));
   }
+
+  initializeBackground();
 </script>
 </body>
 </html>
