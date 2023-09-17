@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    margin: 0;
+  }
+  #gameContainer {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+</style>
+</head>
+<body>
+
+<div id="gameContainer"></div>
+
+<input type="file" id="backgroundInput" accept="image/*" style="position: fixed; top: 10px; left: 10px;"/>
+
+<script>
+  const gameContainer = document.getElementById('gameContainer');
+  const backgroundInput = document.getElementById('backgroundInput');
+  const gridSize = 20;
+  let currentImageParts = [];
+
+  backgroundInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const newImageParts = createImageParts(e.target.result);
+        currentImageParts = mixImageParts(currentImageParts, newImageParts);
+        renderImageParts(currentImageParts);
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  function createImageParts(imageSrc) {
+    const parts = [];
+    for (let i = 0; i < gridSize; i++) {
+      for (let j = 0; j < gridSize; j++) {
+        const part = document.createElement('div');
+        part.style.width = `${100 / gridSize}%`;
+        part.style.height = `${100 / gridSize}%`;
+        part.style.backgroundImage = `url(${imageSrc})`;
+        part.style.backgroundSize = `${gridSize * 100}%`;
+        part.style.backgroundPosition = `${-i * 100}% ${-j * 100}%`;
+        part.style.float = 'left';
+        parts.push(part);
+      }
+    }
+    return parts;
+  }
+
+  function mixImageParts(oldParts, newParts) {
+    const mixedParts = [];
+    for (let i = 0; i < oldParts.length || i < newParts.length; i++) {
+      if (i < oldParts.length && (Math.random() > 0.5 || i >= newParts.length)) {
+        mixedParts.push(oldParts[i]);
+      } else {
+        mixedParts.push(newParts[i]);
+      }
+    }
+    return mixedParts;
+  }
+
+  function renderImageParts(parts) {
+    gameContainer.innerHTML = '';
+    parts.forEach(part => gameContainer.appendChild(part));
+  }
+</script>
+</body>
+</html>
