@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    margin: 0;
+  }
+  #gameContainer {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-image: url('Back.jpg');
+    background-size: cover;
+    background-position: center;
+  }
+
+  .person {
+    position: absolute;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+
+  #backgroundInput {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+  }
+</style>
+</head>
+<body>
+
+<div id="gameContainer"></div>
+
+<input type="file" id="backgroundInput" accept="image/*" />
+
+<script>
+  document.getElementById('backgroundInput').addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('gameContainer').style.backgroundImage = `url(${e.target.result})`;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  let spawnMode = 'person';
+  let backgrounds = ['Art1.jpg', 'Art2.jpg', 'Art3.jpg'];
+
+  document.getElementById('gameContainer').addEventListener('click', (event) => {
+    if (spawnMode) {
+      const element = document.createElement('div');
+      element.className = spawnMode;
+
+      // Randomly select a background image from the array
+      const randomBackground = backgrounds[Math.floor(Math.random() * backgrounds.length)];
+      element.style.backgroundImage = `url('${randomBackground}')`;
+
+      element.style.left = `${event.clientX - 25}px`; // Adjusted to center the images
+      element.style.top = `${event.clientY - 100}px`; // Adjusted to center the images
+
+      // Set random width and height
+      element.style.width = `${Math.random() * 30 + 50}px`; // Random width between 50px and 80px
+      element.style.height = `${Math.random() * 60 + 140}px`; // Random height between 140px and 200px
+
+      document.getElementById('gameContainer').appendChild(element);
+      movePerson(element);
+    }
+  });
+
+  function movePerson(person) {
+    setInterval(() => {
+      const direction = Math.random() > 0.5 ? 1 : -1;
+      const currentLeft = parseFloat(person.style.left);
+      const newLeft = currentLeft + (direction * Math.random() * 2);
+
+      if (newLeft > 0 && newLeft < window.innerWidth - 10) {
+        person.style.left = `${newLeft}px`;
+      }
+    }, 100);
+  }
+</script>
+
+</body>
+</html>
