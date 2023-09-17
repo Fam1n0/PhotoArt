@@ -24,8 +24,7 @@
     overflow: hidden;
   }
   
-  .person::after {
-    content: '';
+  .resize-handle {
     position: absolute;
     bottom: 0;
     right: 0;
@@ -60,6 +59,10 @@
     if (spawnMode) {
       const element = document.createElement('div');
       element.className = spawnMode;
+
+      const resizeHandle = document.createElement('div');
+      resizeHandle.className = 'resize-handle';
+      element.appendChild(resizeHandle);
 
       const gameContainer = document.getElementById('gameContainer');
       const currentBackgroundImage = getComputedStyle(gameContainer).backgroundImage;
@@ -125,7 +128,7 @@
     }
 
     function startResize(event) {
-      if (event.target === person.querySelector('::after')) {
+      if (event.target === person.querySelector('.resize-handle')) {
         isResizing = true;
         startWidth = person.offsetWidth;
         startHeight = person.offsetHeight;
@@ -146,10 +149,6 @@
         person.style.width = `${startWidth + dx}px`;
         person.style.height = `${startHeight + dy}px`;
       }
-    }
-
-    function endResize() {
-      isResizing = false;
     }
   }
 </script>
