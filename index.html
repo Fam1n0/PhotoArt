@@ -20,15 +20,27 @@
     height: 100%;
     background-size: cover;
   }
+  #controls {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+  }
+  #controls button {
+    display: block;
+    margin-bottom: 5px;
+  }
 </style>
 </head>
 <body>
 
 <div id="gameContainer"></div>
 
-<input type="file" id="backgroundInput" accept="image/*" style="position: fixed; top: 10px; left: 10px;"/>
-<button id="downloadBtn" style="position: fixed; top: 10px; right: 10px;">Download Image</button>
-<button id="mixBtn" style="position: fixed; top: 50px; right: 10px;">Mix Image</button>
+<div id="controls">
+  <input type="file" id="backgroundInput" accept="image/*" />
+  <button id="downloadBtn">Download Image</button>
+  <button id="mixBtn">Mix Image</button>
+</div>
 
 <script>
   const gameContainer = document.getElementById('gameContainer');
@@ -96,9 +108,9 @@
   initializeBackground();
 
   document.getElementById('downloadBtn').addEventListener('click', () => {
-    html2canvas(gameContainer, { width: window.innerWidth / 2, height: window.innerHeight / 2 }).then(canvas => {
+    html2canvas(gameContainer).then(canvas => {
       const link = document.createElement('a');
-      link.href = canvas.toDataURL('image/jpeg');
+      link.href = canvas.toDataURL('image/jpeg', 0.7);
       link.download = 'game_image.jpeg';
       link.click();
     });
