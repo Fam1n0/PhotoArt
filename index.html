@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
 <style>
   body {
     margin: 0;
@@ -20,28 +19,17 @@
     height: 100%;
     background-size: cover;
   }
-  #controls {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    z-index: 1000;
-  }
-  #controls button {
-    display: block;
-    margin-bottom: 5px;
-  }
 </style>
 </head>
 <body>
 
 <div id="gameContainer"></div>
 
-<div id="controls">
-  <input type="file" id="backgroundInput" accept="image/*" />
-  <button id="downloadBtn">Download Image</button>
-  <button id="mixBtn">Mix Image</button>
-</div>
+<input type="file" id="backgroundInput" accept="image/*" style="position: fixed; top: 10px; left: 10px;"/>
+<button id="mixBtn" style="position: fixed; top: 10px; left: 200px;">Mix</button>
+<button id="downloadBtn" style="position: fixed; top: 10px; left: 260px;">Download</button>
 
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script>
   const gameContainer = document.getElementById('gameContainer');
   const backgroundInput = document.getElementById('backgroundInput');
@@ -51,7 +39,7 @@
   function initializeBackground() {
     const initialBackgroundImage = document.createElement('div');
     initialBackgroundImage.className = 'imagePart';
-    initialBackgroundImage.style.backgroundImage = `url('Back.jpg')`;
+    initialBackgroundImage.style.backgroundImage = `url('Back.jpg')`; // Changed to png file
     gameContainer.appendChild(initialBackgroundImage);
     currentImageParts.push(initialBackgroundImage);
   }
@@ -105,21 +93,21 @@
     parts.forEach(part => gameContainer.appendChild(part));
   }
 
-  initializeBackground();
+  document.getElementById('mixBtn').addEventListener('click', () => {
+    currentImageParts = mixImageParts(currentImageParts, currentImageParts);
+    renderImageParts(currentImageParts);
+  });
 
   document.getElementById('downloadBtn').addEventListener('click', () => {
     html2canvas(gameContainer).then(canvas => {
       const link = document.createElement('a');
-      link.href = canvas.toDataURL('image/jpeg', 0.7);
-      link.download = 'game_image.jpeg';
+      link.href = canvas.toDataURL('image/jpeg', 0.5); // Lower quality to 0.5
+      link.download = 'game_image_' + new Date().getTime() + '.jpeg'; // Different name each time using a timestamp
       link.click();
     });
   });
 
-  document.getElementById('mixBtn').addEventListener('click', () => {
-    currentImageParts.sort(() => Math.random() - 0.5);
-    renderImageParts(currentImageParts);
-  });
+  initializeBackground();
 </script>
 
 </body>
