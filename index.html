@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
 <style>
   body {
     margin: 0;
@@ -36,15 +36,19 @@
 <div id="gameContainer"></div>
 
 <input type="file" id="backgroundInput" accept="image/*" />
-<button id="downloadButton" style="position: fixed; top: 10px; right: 10px;">Download Image</button>
+<button id="downloadBtn" style="position: fixed; top: 10px; right: 10px;">Download Image</button>
 
 <script>
+  let backgroundImages = [`url('Back.jpg')`];
+
   document.getElementById('backgroundInput').addEventListener('change', (event) => {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = function(e) {
-        document.getElementById('gameContainer').style.backgroundImage = `url(${e.target.result})`;
+        const newBackgroundImage = `url(${e.target.result})`;
+        document.getElementById('gameContainer').style.backgroundImage = newBackgroundImage;
+        backgroundImages.push(newBackgroundImage);
       };
       reader.readAsDataURL(file);
     }
@@ -57,12 +61,11 @@
       const element = document.createElement('div');
       element.className = spawnMode;
 
-      const gameContainer = document.getElementById('gameContainer');
-      const currentBackgroundImage = getComputedStyle(gameContainer).backgroundImage;
-      element.style.backgroundImage = currentBackgroundImage;
+      const randomBackgroundImage = backgroundImages[Math.floor(Math.random() * backgroundImages.length)];
+      element.style.backgroundImage = randomBackgroundImage;
 
       element.style.backgroundPosition = `${Math.random() * 100}% ${Math.random() * 100}%`;
-
+      
       element.style.left = `${event.clientX - 25}px`;
       element.style.top = `${event.clientY - 100}px`;
 
@@ -87,19 +90,14 @@
     }, 100);
   }
 
-  document.getElementById('downloadButton').addEventListener('click', () => {
-    downloadImage();
-  });
-
-  function downloadImage() {
-    const gameContainer = document.getElementById('gameContainer');
-    html2canvas(gameContainer).then(canvas => {
+  document.getElementById('downloadBtn').addEventListener('click', () => {
+    html2canvas(document.getElementById('gameContainer')).then(canvas => {
       const link = document.createElement('a');
-      link.href = canvas.toDataURL('image/png');
-      link.download = 'mixed_image.png';
+      link.href = canvas.toDataURL('image/jpeg');
+      link.download = 'game_image.jpeg';
       link.click();
     });
-  }
+  });
 </script>
 
 </body>
