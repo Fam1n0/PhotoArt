@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <style>
   body {
     margin: 0;
@@ -35,6 +36,7 @@
 <div id="gameContainer"></div>
 
 <input type="file" id="backgroundInput" accept="image/*" />
+<button id="downloadButton" style="position: fixed; top: 10px; right: 10px;">Download Image</button>
 
 <script>
   document.getElementById('backgroundInput').addEventListener('change', (event) => {
@@ -60,7 +62,7 @@
       element.style.backgroundImage = currentBackgroundImage;
 
       element.style.backgroundPosition = `${Math.random() * 100}% ${Math.random() * 100}%`;
-      
+
       element.style.left = `${event.clientX - 25}px`;
       element.style.top = `${event.clientY - 100}px`;
 
@@ -83,6 +85,20 @@
         person.style.left = `${newLeft}px`;
       }
     }, 100);
+  }
+
+  document.getElementById('downloadButton').addEventListener('click', () => {
+    downloadImage();
+  });
+
+  function downloadImage() {
+    const gameContainer = document.getElementById('gameContainer');
+    html2canvas(gameContainer).then(canvas => {
+      const link = document.createElement('a');
+      link.href = canvas.toDataURL('image/png');
+      link.download = 'mixed_image.png';
+      link.click();
+    });
   }
 </script>
 
